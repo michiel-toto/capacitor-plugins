@@ -80,28 +80,19 @@ public class PushNotificationsPlugin extends Plugin {
     @PluginMethod
     public void register(PluginCall call) {
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-        FirebaseInstanceId
-            .getInstance()
-            .getInstanceId()
-            .addOnSuccessListener(
-                getActivity(),
-                new OnSuccessListener<InstanceIdResult>() {
-                    @Override
-                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                        sendToken(instanceIdResult.getToken());
-                    }
-                }
-            );
-        FirebaseInstanceId
-            .getInstance()
-            .getInstanceId()
-            .addOnFailureListener(
-                new OnFailureListener() {
-                    public void onFailure(Exception e) {
-                        sendError(e.getLocalizedMessage());
-                    }
-                }
-            );
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                sendToken(s);
+            }
+        });
+
+        FirebaseMessaging.getInstance().getToken().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                sendError(e.getLocalizedMessage());
+            }
+        });
         call.resolve();
     }
 
